@@ -1,0 +1,147 @@
+import tkinter as tk
+from tkinter import *
+from tkinter import messagebox
+import random
+
+
+
+
+class SampleAPP(tk.Tk):
+
+    def __init__(self, *arg, **kwargs):
+        tk.Tk.__init__(self, *arg, **kwargs)
+        container = tk.Frame(self)
+        container.pack(side="top", fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+
+        self.frames = {}
+        for F in (StartPage, AutPage, AccPage):
+            page_name = F.__name__
+            frame = F(parent=container, controller=self)
+            self.frames[page_name] = frame
+
+            frame.grid(row=0, column=0, sticky="nsew")
+
+            self.show_frame("StartPage")
+
+    def show_frame(self, page_name):
+        frame = self.frames[page_name]
+        frame.tkraise()
+
+
+
+class StartPage(tk.Frame):
+
+    def __init__(self, parent, controller):
+
+        tk.Frame.__init__(self, parent, bg="silver")
+        self.controller = controller
+        self.controller.title("Guardian")
+        self.controller.state('zoomed')
+
+        def login():
+            user = username.get()
+            code = password.get()
+
+            if user == "U1" and code == "1234":
+                controller.show_frame('AutPage')
+            elif user == "" and code == "":
+                messagebox.showerror("Error", "Please enter Username and Password")
+            elif user == "":
+                messagebox.showerror("Error", "Username is required")
+            elif code == "":
+                messagebox.showerror("Error", "Password field is required")
+            elif user != "U1" :
+                messagebox.showerror("Error", "Wrong user")
+            elif code != "1234":
+                messagebox.showerror("Error", "Wrong Password")
+
+        big_lable = tk.Label(self, text="Welcome to \n ZXC Bank", font=('Times New Roman', 45, 'bold'), fg="black",bg="silver")
+        big_lable.pack(pady=25)
+        login_lable = tk.Label(self, text="Login", font=('Times New Roman', 15, 'bold'), fg="black", bg="silver")
+        login_lable.pack(pady=15)
+
+        username = StringVar()
+        username_entry = tk.Entry(self, textvariable=username, font=('Times New Roman', 15, 'bold'), fg="black",bg="white")
+        username_entry.pack()
+        password_lable = tk.Label(self, text="Password", font=('Times New Roman', 15, 'bold'), fg="black", bg="silver")
+        password_lable.pack()
+        password = StringVar()
+        password_entry = tk.Entry(self, textvariable=password, font=('Times New Roman', 15, 'bold'), fg="black",bg="white")
+        password_entry.pack(pady=15)
+        login_button = tk.Button(self, text="Sign in", command=login, font=('Times New Roman', 15, 'bold'), fg="black", bg="silver")
+        login_button.pack()
+        right_lable = tk.Label(self, font=('Times New Roman', 15, 'bold'), fg="black", bg="silver")
+        right_lable.pack(pady=30)
+
+
+class AutPage(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg="silver", )
+        self.controller = controller
+
+        autentificator_code = ""
+
+
+
+        alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        digits = "123456789"
+        s = alphabet + digits
+
+        for n in range(6):
+            autentificator_code += random.choice(s)
+
+        def check():
+            password = entry1.get()
+
+            if password == autentificator_code:
+                controller.show_frame('AccPage')
+
+            elif password == "":
+                messagebox.showinfo("", "Password field is required")
+            elif password != autentificator_code:
+                messagebox.showinfo("", "Wrong code")
+
+
+
+        def Get_code():
+         messagebox.showinfo("", autentificator_code)
+
+
+        entry1 = tk.Entry(self, font=('Times New Roman', 15, 'bold'), fg="black",bg="white")
+        entry1.pack(pady=25)
+        check_button = tk.Button(self, text="Check code", command=check, font=('Times New Roman', 15, 'bold'), fg="black",bg="silver")
+        check_button.pack(pady=20)
+        code_button = tk.Button(self, text="Get code", command=Get_code, font=('Times New Roman', 15, 'bold'),fg="black", bg="silver")
+        code_button.pack()
+
+
+
+
+
+class AccPage(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg="silver", )
+        self.controller = controller
+
+
+        info1_lable = tk.Label(self, text="Welcome User 1", font=('Times New Roman', 15, 'bold'), fg="black",bg="silver")
+        info1_lable.pack(pady=150)
+        info2_lable = tk.Label(self, text="Your current balance is 465.95 $ ", font=('Times New Roman', 15, 'bold'), fg="black",bg="silver")
+        info2_lable.pack()
+        info3_lable = tk.Label(self, text="Expenses for the current month 212.85 $", font=('Times New Roman', 15, 'bold'), fg="black",bg="silver")
+        info3_lable.pack()
+        info4_lable = tk.Label(self, text="Receipts for the current month   678.8 $", font=('Times New Roman', 15, 'bold'), fg="black",bg="silver")
+        info4_lable.pack()
+
+
+
+if __name__ == "__main__":
+    app = SampleAPP()
+
+    app.mainloop()
+
+
